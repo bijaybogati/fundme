@@ -2,6 +2,7 @@
 pragma solidity ^0.8.8;
 
 import "./PriceConverter.sol";
+error NotOwner();
 
 
 //Get fund from users
@@ -71,8 +72,24 @@ contract FundMe {
     }
 
     modifier onlyOwner{
-        require(msg.sender == i_owner, "Sender is not owner!");
+        // require(msg.sender == i_owner, "Sender is not owner!");
+        if(msg.sender != i_owner){
+            revert NotOwner();
+        }
         _;
     }
 
+    // What happen if someone sends this contract ETH without calling the fund function
+    // receive
+
+    receive() external payable{
+        fund();
+    }
+
+
+    // fallback
+
+    fallback() external payable{
+        fund();
+    }
 }
